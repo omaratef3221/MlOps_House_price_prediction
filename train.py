@@ -1,5 +1,4 @@
 from sklearn.model_selection import train_test_split
-import tensorflow as tf
 from sklearn.ensemble import RandomForestRegressor
 from sklearn.linear_model import LinearRegression
 from sklearn.preprocessing import normalize
@@ -33,6 +32,12 @@ def train(args, data):
     print("MAE Percentage: ", mean_absolute_percentage_error(y_test, predictions))
 
     joblib.dump(algo, args.model_path + "/model.pkl")
-
-    return algo
+    
+    results = {
+        "MSE": mean_squared_error(y_test, predictions),
+        "RMSE": root_mean_squared_error(y_test, predictions),
+        "R2_Score": r2_score(predictions, y_test),
+        "MAE Percentage": mean_absolute_percentage_error(y_test, predictions)
+    }
+    return results, algo
 
