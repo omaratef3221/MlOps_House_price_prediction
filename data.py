@@ -1,13 +1,12 @@
 import warnings
 warnings.filterwarnings('ignore')
 import pandas as pd
-from tabulate import tabulate
 from sklearn.preprocessing import LabelEncoder
 import numpy as np
 import os
 import json
 
-def get_cleaned_dataset(path = "perth-house-prices/all_perth_310121.csv", encoder_path = "."):
+def get_cleaned_dataset(path = "perth-house-prices/all_perth_310121.csv", encoder_path = ".", args = None):
     df = pd.read_csv(path)
     df.dropna(inplace=True)
     df.drop(["ADDRESS", 
@@ -23,13 +22,13 @@ def get_cleaned_dataset(path = "perth-house-prices/all_perth_310121.csv", encode
     Encoder = LabelEncoder()
     df["SUBURB"] = Encoder.fit_transform(df["SUBURB"])
     np.save(os.path.join(encoder_path, "SUBURB_encoder.npy"), Encoder.classes_)
-        
-    remove_outliers(df, "BUILD_YEAR")
-    remove_outliers(df, "LAND_AREA")
-    remove_outliers(df, "NEAREST_STN_DIST")
-    remove_outliers(df, "CBD_DIST")
-    remove_outliers(df, "NEAREST_SCH_DIST")
-    
+    if args.remove_outliers:
+        remove_outliers(df, "BUILD_YEAR")
+        remove_outliers(df, "LAND_AREA")
+        remove_outliers(df, "NEAREST_STN_DIST")
+        remove_outliers(df, "CBD_DIST")
+        remove_outliers(df, "NEAREST_SCH_DIST")
+
     return df
 
 def remove_outliers(df, column):
